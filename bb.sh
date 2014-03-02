@@ -435,7 +435,7 @@ create_html_page() {
 parse_file() {
     # Read for the title and check that the filename is ok
     title=""
-    while read line; do
+    while read -r line; do
         if [[ "$title" == "" ]]; then
             # set title and
             # remove extra <p> and </p> added by markdown
@@ -543,7 +543,7 @@ EOF
             echo "Saved your draft as '$draft'"
             exit
         fi
-        if [[ "$post_status" == "e" ]] || [[ "$post_status" == "E" ]]; then
+        if [[ "$post_status" != "p" ]] || [[ "$post_status" != "P" ]]; then
             rm "$filename" # Delete the html file as it will be generated again
         fi
     done
@@ -551,7 +551,7 @@ EOF
     rm "$TMPFILE"
     # Parse possible tags
     cp "$filename" "$filename.bak"
-    while read line; do
+    while read -r line; do
         if [[ "$line" = "<p>$template_tags_line_header"* ]]; then
             tags="$(echo "$line" | cut -d ":" -f 2- | sed -e 's/<\/p>//g' -e 's/^ *//' -e 's/ *$//' -e 's/, /,/g')"
             IFS=, read -r -a array <<< "$tags"
